@@ -99,9 +99,6 @@ function($scope, $routeParams, $location, $timeout, Rules, Search, $modal, $rout
     if (value) {
       localStorage.setItem("pr_ch_filter", value);
     }
-    else{
-      localStorage.setItem("pr_ch_filter", "All rules");
-    }
     $scope.pr_ch_selected = value.split(',');
   });
 
