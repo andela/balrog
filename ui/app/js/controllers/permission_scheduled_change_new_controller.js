@@ -16,18 +16,6 @@ function ($scope, $modalInstance, CSRF, Permissions, scheduled_changes, sc) {
     permissions: {}
   };
 
-  $scope.permission_list = {
-    default:'--Please Select--',
-    admin: 'Admin',
-    rule: 'Rule',
-    release: 'Release',
-    release_read_only: 'Release Read Only',
-    release_locale: 'Relaease Locale',
-    required_signedoff: 'Required Signedoff',
-    permission: 'Permission',
-    scheduled_change:'Scheduled Change'
-  };
-
   $scope.sc.permissions = [];
   Permissions.getUserPermissions(sc.username)
   .then(function(permissions) {
@@ -48,6 +36,7 @@ function ($scope, $modalInstance, CSRF, Permissions, scheduled_changes, sc) {
     permission_sc.change_type = "insert";
     $scope.saving = true;
     if($scope.sc.username) {
+      console.log($scope.sc.username,"hdsfhsfdfh")
     permission_sc.username = $scope.sc.username;
     }
     CSRF.getToken()
@@ -56,12 +45,16 @@ function ($scope, $modalInstance, CSRF, Permissions, scheduled_changes, sc) {
       .success(function(response) {
         permission_sc.sc_data_version = 1;
         permission_sc.sc_id = response.sc_id;
+        $scope.scheduled_changes.push(permission_sc);
+        console.log($scope.scheduled_changes,"list of changes");
+        console.log(permission_sc,"permission tsher");
+        sweetAlert("Saved", "Permission Scheduled", "success");
         if(permission_sc.options){
           permission_sc.options = JSON.parse(permission_sc.options);
         }
-        $scope.scheduled_changes.push(permission_sc);
         if($scope.sc.username) {
         sweetAlert("Permission Scheduled", "success");
+        console.log($scope.scheduled_changes,"list of changes3");
         }
         else {
         $modalInstance.close();
