@@ -44,10 +44,11 @@ function ($scope, $modalInstance, CSRF, Permissions, scheduled_changes, sc) {
       .success(function(response) {
         permission_sc.sc_data_version = 1;
         permission_sc.sc_id = response.sc_id;
+        $scope.scheduled_changes.push(permission_sc);
+        sweetAlert("Saved", "Permission Scheduled", "success");
         if(permission_sc.options){
           permission_sc.options = JSON.parse(permission_sc.options);
         }
-        $scope.scheduled_changes.push(permission_sc);
         if($scope.sc.username) {
         sweetAlert("Permission Scheduled", "success");
         }
