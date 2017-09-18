@@ -258,7 +258,6 @@ class UserRolesView(AdminView):
         roles = dbo.permissions.getUserRoles(username)
         return jsonify({"roles": roles})
 
-
 class AllRolesView(AdminView):
     """/users/roles"""
 

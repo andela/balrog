@@ -3,6 +3,9 @@ angular.module("app").factory('Permissions', function($http, $q, ScheduledChange
     getUsers: function() {
       return $http.get('/api/users');
     },
+    getRoles: function() {
+      return $http.get('/api/users/roles');
+    },
     getCurrentUser: function() {
       return $http.get("/api/users/current");
     },

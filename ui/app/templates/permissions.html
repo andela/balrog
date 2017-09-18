@@ -1,68 +1,127 @@
-<div loader ng-show="loading"></div>
+<div class="tabbable tabs-below">
+  <ul class="nav nav-pills">
+    <li ng-class="{ active: isSet(1) }">
+      <a href ng-click="setTab(1)">Users</a>
+    </li>
+    <li ng-class="{ active: isSet(2) }">
+      <a href ng-click="setTab(2)">Roles</a>
+    </li>
+  </ul>
+</div>
+<!-- Users tab begins here -->
+<div ng-show="isSet(1)">
+  <div loader ng-show="loading"></div>
 
 
-<form role="form" class="search-form">
+  <form role="form" class="search-form">
 
-  <div class="form-group form-group-search">
-    <input type="search" class="form-control" placeholder="Search for anything"
-           ng-model="filters.search">
-    <span ng-show="filters.search.length" ng-click="filters.search=''"
-           class="glyphicon glyphicon-remove-circle clear-search"></span>
-  </div>
+    <div class="form-group form-group-search">
+      <input type="search" class="form-control" placeholder="Search for users" ng-model="filters.search">
+      <span ng-show="filters.search.length" ng-click="filters.search=''" class="glyphicon glyphicon-remove-circle clear-search"></span>
+    </div>
 
-</form>
+  </form>
 
 
-<h2>
-  <span ng-show="!username">Users</span>
-  <span ng-show="username">{{ username }}</span>
+  <h2>
+    <span ng-show="!username">Users</span>
+    <span ng-show="username">{{ username }}</span>
 
-  <span class="count">
+    <span class="count">
     ({{ filtered_items.length | number:0 }}
     <span ng-bind="hasFilter() ? 'found' : 'in total'"></span>)
-  </span>
+    </span>
 
-  <button class="btn btn-primary btn-xs"
-          ng-show="!username" ng-click="openNewModal()">
+    <button class="btn btn-primary btn-xs" ng-show="!username" ng-click="openNewModal()">
     Add a new permission
     <i class="glyphicon glyphicon-plus"></i>
   </button>
 
-</h2>
+  </h2>
 
 
-<div class="pagination-container" ng-show="filtered_items.length > pageSize">
-  <pagination
-    class="pagination-sm"
-    total-items="filtered_items.length"
-    ng-model="currentPage"
-    items-per-page="pageSize"
-  ></pagination>
-</div>
-
-
-<div class="panel panel-default" style="clear:right"
-     ng-repeat="user in filtered_items = (users | filter:filterBySearch) | orderBy:ordering | startFrom:(currentPage - 1)*pageSize | limitTo:pageSize">
-  <div class="panel-heading">
-
-    <h3 class="panel-title">
-      <div style="float: right">
-        <i ng-show="username && $first">Current</i>
-        <button ng-show="!username" class="btn btn-default btn-xs" ng-click="openNewScheduledPermissionChangeModal(user)">Schedule a Change</button>
-        <button ng-show="!username" class="btn btn-default btn-xs" ng-click="openUpdateModal(user)">Update</button>
-      </div>
-      <span title="Username" ng-bind-html="highlightSearch(user.username, 'username')"></span>
-    </h3>
+  <div class="pagination-container" ng-show="filtered_items.length > pageSize">
+    <pagination class="pagination-sm" total-items="filtered_items.length" ng-model="currentPage" items-per-page="pageSize"></pagination>
   </div>
 
+
+  <div class="panel panel-default" style="clear:right" ng-repeat="user in filtered_items = (users | filter:filterBySearch) | orderBy:ordering | startFrom:(currentPage - 1)*pageSize | limitTo:pageSize">
+    <div class="panel-heading">
+
+      <h3 class="panel-title">
+        <div style="float: right">
+          <i ng-show="username && $first">Current</i>
+          <button ng-show="!username" class="btn btn-default btn-xs" ng-click="openNewScheduledPermissionChangeModal(user)">Schedule a Change</button>
+          <button ng-show="!username" class="btn btn-default btn-xs" ng-click="openUpdateModal(user)">Update</button>
+        </div>
+        <span title="Username" ng-bind-html="highlightSearch(user.username, 'username')"></span>
+      </h3>
+    </div>
+
+  </div>
+
+
+  <div class="pagination-container" ng-show="filtered_items.length > pageSize">
+    <pagination class="pagination-sm" total-items="filtered_items.length" ng-model="currentPage" items-per-page="pageSize"></pagination>
+  </div>
+</div>
+<!-- Roles tab begins here -->
+<div <div ng-show="isSet(2)">
+  <div loader ng-show="loading"></div>
+
+
+  <form role="form" class="search-form">
+
+    <div class="form-group form-group-search">
+      <input type="search" class="form-control" placeholder="Search for roles" ng-model="filters.search">
+      <span ng-show="filters.search.length" ng-click="filters.search=''" class="glyphicon glyphicon-remove-circle clear-search"></span>
+    </div>
+
+  </form>
+
+
+  <h2>
+    <span ng-show="!username">Roles</span>
+    <span ng-show="username">{{ username }}</span>
+
+    <span class="count">
+    ({{ filtered_items.length | number:0 }}
+    <span ng-bind="hasFilter() ? 'found' : 'in total'"></span>)
+    </span>
+
+    <button class="btn btn-primary btn-xs" ng-show="!username" ng-click="openNewModal()">
+    Add a new permission
+    <i class="glyphicon glyphicon-plus"></i>
+  </button>
+
+  </h2>
+
+
+  <div class="pagination-container" ng-show="filtered_items.length > pageSize">
+    <pagination class="pagination-sm" total-items="filtered_items.length" ng-model="currentPage" items-per-page="pageSize"></pagination>
+  </div>
+
+<div class="panel-group" id="accordion" ng-repeat="role in filtered_items = (roles | filter:filterBySearch) | orderBy:ordering | startFrom:(currentPage - 1)*pageSize | limitTo:pageSize">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" data-target="#{{role.role}}">
+        <span title="role" ng-bind-html="highlightSearch(role.role, 'role')"></span>
+        </a>
+      </h4>
+    </div>
+    <div ng-attr-id="{{ role.role }}"class="panel-collapse collapse">
+      <div class="panel-body">
+        <!--Users will go in here-->
+        <h5>User sample</h5>
+      </div>
+    </div>
+  </div>
+  
+
+  <div class="pagination-container" ng-show="filtered_items.length > pageSize">
+    <pagination class="pagination-sm" total-items="filtered_items.length" ng-model="currentPage" items-per-page="pageSize"></pagination>
+  </div>
 </div>
 
-
-<div class="pagination-container" ng-show="filtered_items.length > pageSize">
-  <pagination
-    class="pagination-sm"
-    total-items="filtered_items.length"
-    ng-model="currentPage"
-    items-per-page="pageSize"
-  ></pagination>
 </div>
