@@ -781,18 +781,25 @@ class TestPermissionsScheduledChanges(ViewTest):
 
 class TestUserRolesAPI_JSON(ViewTest):
 
-    def testGetRoles(self):
+    def testGetUserRoles(self):
         ret = self._get("/users/bill/roles")
         self.assertStatusCode(ret, 200)
         got = json.loads(ret.data)["roles"]
         self.assertEquals(got, [{"role": "qa", "data_version": 1},
                           {"role": "releng", "data_version": 1}])
 
-    def testGetAllRoles(self):
-        ret = self._get("/users/roles")
+    def testGetRoleUsers(self):
+        ret = self._get("/roles/releng/users")
         self.assertStatusCode(ret, 200)
         got = json.loads(ret.data)["roles"]
-        self.assertEqual(got, ['releng', 'qa', 'relman'])
+        self.assertEquals(got, [{"username": "janet", "data_version": 1},
+                          {"role": "releng", "data_version": 1}])
+
+    def testGetAllRoles(self):
+        ret = self._get("/roles")
+        self.assertStatusCode(ret, 200)
+        got = json.loads(ret.data)["roles"]
+        self.assertEqual(got, ['releng', 'qa'])
 
     def testGetRolesMissingUserReturnsEmptyList(self):
         ret = self.client.get("/users/dean/roles")

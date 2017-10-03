@@ -4006,6 +4006,9 @@ class TestPermissions(unittest.TestCase, MemoryDatabaseMixin):
                                                                     "janet",
                                                                     "sean"]))
 
+    def testGetAllRoles(self):
+        self.assertEquals(self.permissions.getAllRoles(), ["releng", "dev"])
+
     def testCountAllUsers(self):
         self.assertEquals(self.permissions.countAllUsers(), 7)
 
@@ -4073,6 +4076,12 @@ class TestPermissions(unittest.TestCase, MemoryDatabaseMixin):
         got = self.permissions.getUserRoles("bob")
         self.assertEquals(sorted(got), sorted([{'data_version': 1, 'role': u'releng'}, {'data_version': 1, 'role': u'dev'}]))
 
+    def testGetRoleUsers(self):
+        got = self.permissions.getRoleUsers("releng")
+        self.assertEquals(sorted(got), sorted([{'data_version': 1, 'username': u'bob'},
+                                               {'data_version': 1, 'username': u'cathy'},
+                                               {'data_version': 1, 'username': u'janet'}]))
+
     def testGetUserRolesNonExistantUser(self):
         got = self.permissions.getUserRoles("kirk")
         self.assertEquals(got, [])
@@ -4082,6 +4091,9 @@ class TestPermissions(unittest.TestCase, MemoryDatabaseMixin):
 
     def testHasRole(self):
         self.assertTrue(self.permissions.hasRole("bob", "releng"))
+
+    def testHasUser(self):
+        self.assertTrue(self.permissions.hasUser("releng", "janet"))
 
     def testHasRoleNegative(self):
         self.assertFalse(self.permissions.hasRole("cathy", "dev"))
