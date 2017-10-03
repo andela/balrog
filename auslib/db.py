@@ -2270,7 +2270,7 @@ class Permissions(AUSTable):
     def getAllPermissions(self, transaction=None):
         ret = defaultdict(dict)
         for r in self.select(transaction=transaction):
-            ret[r["username"]][r["permission"]] = r["options"]
+            ret[r["username"]][r["permission"]][r["role"]] = r["options"]
         return ret
 
     def countAllUsers(self, transaction=None):
@@ -2394,6 +2394,12 @@ class Permissions(AUSTable):
         res = self.user_roles.select(columns=[self.user_roles.role], distinct=True, transaction=transaction)
         return [r["role"] for r in res]
 
+    def getRoleUsers(self, role, transaction=None):
+        res = self.user_roles.select(where=[self.user_roles.role == role],
+                                     columns=[self.user_roles.username, self.user_roles.data_version],
+                                     distinct=True, transaction=transaction)
+        return [{"username": r["username"], "data_version": r["data_version"]} for r in res]
+
     def isAdmin(self, username, transaction=None):
         return bool(self.getPermission(username, "admin", transaction))
 
@@ -2427,6 +2433,10 @@ class Permissions(AUSTable):
     def hasRole(self, username, role, transaction=None):
         roles_list = [r['role'] for r in self.getUserRoles(username, transaction)]
         return role in roles_list
+
+    def hasUser(self, username, role, transaction=None):
+        users_list = [r['username'] for r in self.getRoleUsers(role, transaction)]
+        return username in users_list
 
 
 class Dockerflow(AUSTable):
@@ -2653,6 +2663,9 @@ class AUSDatabase(object):
 
     def getUserRoles(self, *args, **kwargs):
         return self.permissions.getUserRoles(*args, **kwargs)
+
+    def getRoleUsers(self, *args, **kwargs):
+        return self.permissions.getRoleUsers(*args, **kwargs)
 
     def create(self, version=None):
         # Migrate's "create" merely declares a database to be under its control,
