@@ -1252,7 +1252,7 @@ paths:
                 minItems: 0
                 items:
                   type: string
-                example: ["balrogadmin"]
+                example: ["releng", "qa"]
 
 
   /users/{username}:
@@ -1377,6 +1377,18 @@ paths:
                   required:
                     - data_version
                     - role
+
+  /roles/{role}/users:
+    get:
+      summary: Returns list of role users
+      operationId: auslib.web.admin.views.mapper.role_get_users
+      consumes: []
+      parameters:
+        - $ref: '#/parameters/roleParam'
+      produces: [application/json]
+      responses:
+        '200':
+          description: Successfully fetches the list of role users.
 
   /users/{username}/roles/{role}:
     put:
