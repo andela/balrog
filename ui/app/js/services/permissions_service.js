@@ -69,6 +69,10 @@ angular.module("app").factory('Permissions', function($http, $q, ScheduledChange
       var url = '/api/users/' + encodeURIComponent(username) + '/roles';
       return $http.get(url);
     },
+    getRoleUsers: function(role){
+      var url = 'api/roles/'+encodeURIComponent(role)+ '/users';
+      return $http.get(url);
+    },
     getAllRoles: function() {
       return $http.get('/api/users/roles');
     },

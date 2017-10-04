@@ -1,8 +1,8 @@
 angular.module("app").controller('PermissionsController',
   function ($scope, $routeParams, $location, $timeout, Permissions, Search, $modal, Page) {
- 
+
     Page.setTitle('Permissions');
-    
+
     $scope.loading = true;
     $scope.failed = false;
     $scope.username = $routeParams.username;
@@ -14,6 +14,38 @@ angular.module("app").controller('PermissionsController',
 
     $scope.setTab = function (newTab) {
       $scope.tab = newTab;
+      if ($scope.tab === 2) {
+        Permissions.getAllRoles()
+          .success(function (response) {
+            $scope.roles = _.map(response.roles, function (each) {
+              return { role: each };
+            });
+          })
+          .error(function () {
+            console.error(arguments);
+            $scope.failed = true;
+          })
+          .finally(function () {
+            $scope.loading = false;
+          });
+      }
+    };
+
+    $scope.rolesUsers = {};
+    $scope.getRoleUsers = function (role) {
+      Permissions.getRoleUsers(role)
+        .success(function (response) {
+          $scope.rolesUsers[role] = _.map(response.users, function (each) {
+            return each['username'];
+          });
+        })
+        .error(function () {
+          console.error(arguments);
+          $scope.failed = true;
+        })
+        .finally(function () {
+          $scope.loading = false;
+        });
     };
 
     if ($scope.username) {
@@ -27,19 +59,6 @@ angular.module("app").controller('PermissionsController',
         .success(function (response) {
           $scope.users = _.map(response.users, function (each) {
             return { username: each };
-          });
-        })
-        .error(function () {
-          console.error(arguments);
-          $scope.failed = true;
-        })
-        .finally(function () {
-          $scope.loading = false;
-        });
-      Permissions.getAllRoles()
-        .success(function (response) {
-          $scope.roles = _.map(response.roles, function (each) {
-            return { role: each };
           });
         })
         .error(function () {

@@ -65,6 +65,7 @@
     <pagination class="pagination-sm" total-items="filtered_items.length" ng-model="currentPage" items-per-page="pageSize"></pagination>
   </div>
 </div>
+
 <!-- Roles tab begins here -->
 <div <div ng-show="isSet(2)">
   <div loader ng-show="loading"></div>
@@ -101,27 +102,26 @@
     <pagination class="pagination-sm" total-items="filtered_items.length" ng-model="currentPage" items-per-page="pageSize"></pagination>
   </div>
 
-<div class="panel-group" id="accordion" ng-repeat="role in filtered_items = (roles | filter:filterBySearch) | orderBy:ordering | startFrom:(currentPage - 1)*pageSize | limitTo:pageSize">
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" data-target="#{{role.role}}">
-        <span title="role" ng-bind-html="highlightSearch(role.role, 'role')"></span>
-        </a>
-      </h4>
-    </div>
-    <div ng-attr-id="{{ role.role }}"class="panel-collapse collapse">
-      <div class="panel-body">
-        <!--Users will go in here-->
-        <h5>User sample</h5>
+  <div class="panel-group" id="accordion" ng-repeat="role in filtered_items = (roles | filter:filterBySearch) | orderBy:ordering | startFrom:(currentPage - 1)*pageSize | limitTo:pageSize">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-parent="#accordion" data-target="#{{role.role}}" ng-click="getRoleUsers(role.role)">
+            <span title="role" ng-bind-html="highlightSearch(role.role, 'role')"></span>
+          </a>
+        </h4>
+      </div>
+      <div ng-attr-id="{{ role.role }}" class="panel-collapse collapse">
+        <div class="panel-body">
+          <div ng-repeat="roleUser in rolesUsers[role.role]">
+            <h5>{{ roleUser }}</h5>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  
 
   <div class="pagination-container" ng-show="filtered_items.length > pageSize">
     <pagination class="pagination-sm" total-items="filtered_items.length" ng-model="currentPage" items-per-page="pageSize"></pagination>
   </div>
-</div>
-
 </div>
