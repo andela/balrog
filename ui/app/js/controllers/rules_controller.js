@@ -202,7 +202,9 @@ angular.module("app").controller('RulesController',
     };
 
     $scope.$watch('ordering_str', function (value) {
-      $scope.ordering = value.value.split(',');
+      if(value){
+        $scope.ordering = value.value.split(',');
+      }
     });
 
     function populateRulesProductsChannels() {
