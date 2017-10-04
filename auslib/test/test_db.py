@@ -4093,7 +4093,7 @@ class TestPermissions(unittest.TestCase, MemoryDatabaseMixin):
         self.assertTrue(self.permissions.hasRole("bob", "releng"))
 
     def testHasUser(self):
-        self.assertTrue(self.permissions.hasUser("releng", "janet"))
+        self.assertTrue(self.permissions.hasUser("bob", "releng"))
 
     def testHasRoleNegative(self):
         self.assertFalse(self.permissions.hasRole("cathy", "dev"))
