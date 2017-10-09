@@ -1,5 +1,5 @@
 angular.module("app").controller('PermissionsController',
-  function ($scope, $routeParams, $location, $timeout, Permissions, Search, $modal, Page) {
+  function ($scope, $routeParams, $location, $timeout, Permissions, Search, $modal, Page, PermissionsRequiredSignoffs) {
 
     Page.setTitle('Permissions');
 
@@ -69,6 +69,12 @@ angular.module("app").controller('PermissionsController',
           $scope.loading = false;
         });
     }
+
+    $scope.signoffRequirements = [];
+    PermissionsRequiredSignoffs.getRequiredSignoffs()
+      .then(function (payload) {
+        $scope.signoffRequirements = payload.data.required_signoffs;
+      });
 
     $scope.ordering = ['username'];
 
@@ -142,6 +148,9 @@ angular.module("app").controller('PermissionsController',
           user: function () {
             return user;
           },
+          permissionSignoffRequirements: function () {
+            return $scope.signoffRequirements;
+          },
         }
       });
     };
@@ -163,6 +172,9 @@ angular.module("app").controller('PermissionsController',
           },
           user: function () {
             return $scope.user;
+          },
+          permissionSignoffRequirements: function () {
+            return $scope.signoffRequirements;
           },
         }
       });
@@ -186,7 +198,10 @@ angular.module("app").controller('PermissionsController',
             sc = angular.copy(user);
             sc["change_type"] = "insert";
             return sc;
-          }
+          },
+          permissionSignoffRequirements: function () {
+            return $scope.signoffRequirements;
+          },
         }
       });
     };

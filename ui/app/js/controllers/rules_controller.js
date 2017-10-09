@@ -1,5 +1,5 @@
 angular.module("app").controller('RulesController',
-  function ($scope, $routeParams, $location, $timeout, Rules, Search, $modal, $route, Releases, Page, Permissions) {
+  function ($scope, $routeParams, $location, $timeout, Rules, Search, $modal, $route, Releases, Page, Permissions, ProductRequiredSignoffs) {
 
     Page.setTitle('Rules');
 
@@ -100,6 +100,16 @@ angular.module("app").controller('RulesController',
                 $scope.pr_ch_filter = $scope.pr_ch_options.indexOf(pc_filter) === -1 ? "All rules" : pc_filter;
               });
           });
+
+          ProductRequiredSignoffs.getRequiredSignoffs()
+            .then(function (payload) {
+              $scope.signoffRequirements = payload.data.required_signoffs;
+            });
+          $scope.ruleSignoffsRequired = function (rule) {
+            if ($scope.signoffRequirements) {
+              return Rules.ruleSignoffsRequired(rule, undefined, $scope.signoffRequirements);
+            }
+          };
         })
         .error(function () {
           console.error(arguments);
@@ -209,6 +219,9 @@ angular.module("app").controller('RulesController',
           rule: function () {
             return rule;
           },
+          signoffRequirements: function () {
+            return $scope.signoffRequirements;
+          },
           pr_ch_options: function () {
             return $scope.pr_ch_options;
           }
@@ -241,6 +254,7 @@ angular.module("app").controller('RulesController',
           sc: function () {
             // blank new default rule
             return {
+              base_row: undefined,
               product: product,
               channel: channel,
               backgroundRate: 0,
@@ -249,7 +263,10 @@ angular.module("app").controller('RulesController',
               when: null,
               change_type: 'insert',
             };
-          }
+          },
+          signoffRequirements: function () {
+            return $scope.signoffRequirements;
+          },
         }
       });
       modalInstance.result.then(function (sc) {
@@ -271,9 +288,13 @@ angular.module("app").controller('RulesController',
           },
           sc: function () {
             sc = angular.copy(rule);
+            sc.original_row = rule;
             sc["change_type"] = "update";
             return sc;
-          }
+          },
+          signoffRequirements: function () {
+            return $scope.signoffRequirements;
+          },
         }
       });
       modalInstance.result.then(function (sc) {
@@ -293,11 +314,15 @@ angular.module("app").controller('RulesController',
           },
           sc: function () {
             return {
+              "base_row": rule,
               "rule_id": rule.rule_id,
               "data_version": rule.data_version,
               "change_type": "delete"
             };
-          }
+          },
+          signoffRequirements: function () {
+            return $scope.signoffRequirements;
+          },
         }
       });
       modalInstance.result.then(function (sc) {
@@ -313,8 +338,16 @@ angular.module("app").controller('RulesController',
         backdrop: 'static',
         resolve: {
           sc: function () {
-            return rule.scheduled_change;
-          }
+            var sc = angular.copy(rule.scheduled_change);
+            sc.original_row = rule;
+            return sc;
+          },
+          signoffRequirements: function () {
+            return $scope.signoffRequirements;
+          },
+          rule: function () {
+            return rule;
+          },
         }
       });
       modalInstance.result.then(function (action) {
@@ -372,6 +405,9 @@ angular.module("app").controller('RulesController',
               _duplicate: false,
             };
           },
+          signoffRequirements: function () {
+            return $scope.signoffRequirements;
+          },
           pr_ch_options: function () {
             return $scope.pr_ch_options;
           }
@@ -396,6 +432,9 @@ angular.module("app").controller('RulesController',
             delete copy.rule_id;
             copy._duplicate = true;
             return copy;
+          },
+          signoffRequirements: function () {
+            return $scope.signoffRequirements;
           },
           pr_ch_options: function () {
             return $scope.pr_ch_options;
