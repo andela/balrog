@@ -2257,15 +2257,21 @@ class Permissions(AUSTable):
                 raise ValueError('Unknown option "%s" for permission "%s"' % (opt, permission))
 
     def getAllUsers(self, transaction=None):
-        res_permissions = self.select(columns=[self.username], distinct=True, transaction=transaction)
-        res_roles = self.user_roles.select(columns=[self.user_roles.username], transaction=transaction)
-        res = res_roles + res_permissions
-        return list(set([r['username'] for r in res]))
+        res_users = self.select(columns=[self.username], distinct=True, transaction=transaction)
+        users_list = list(set([r['username'] for r in res_users]))
+        users = []
+        for user in users_list:
+            res_roles = self.user_roles.select(where=[self.user_roles.username == user],
+            columns=[self.user_roles.role, self.user_roles.data_version], transaction=transaction)
+            user_roles = {}
+            user_roles[user] = res_roles
+            users.append(user_roles)
+        return users
 
     def getAllPermissions(self, transaction=None):
         ret = defaultdict(dict)
         for r in self.select(transaction=transaction):
-            ret[r["username"]][r["permission"]][r["role"]] = r["options"]
+            ret[r["username"]][r["permission"]] = r["options"]
         return ret
 
     def countAllUsers(self, transaction=None):
@@ -2387,7 +2393,15 @@ class Permissions(AUSTable):
 
     def getAllRoles(self, transaction=None):
         res = self.user_roles.select(columns=[self.user_roles.role], distinct=True, transaction=transaction)
-        return [r["role"] for r in res]
+        roles_list = list(set([r['role'] for r in res]))
+        roles = []
+        for role in roles_list:
+            res_users = self.user_roles.select(where=[self.user_roles.role == role],
+            columns=[self.user_roles.username, self.user_roles.data_version], transaction=transaction)
+            role_users = {}
+            role_users[role] = res_users
+            roles.append(role_users)
+        return roles
 
     def getRoleUsers(self, role, transaction=None):
         res = self.user_roles.select(where=[self.user_roles.role == role],
@@ -2429,7 +2443,7 @@ class Permissions(AUSTable):
         roles_list = [r['role'] for r in self.getUserRoles(username, transaction)]
         return role in roles_list
 
-    def hasUser(self, username, role, transaction=None):
+    def roleHasUser(self, username, role, transaction=None):
         users_list = [r['username'] for r in self.getRoleUsers(role, transaction)]
         return username in users_list
 
