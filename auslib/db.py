@@ -2261,8 +2261,10 @@ class Permissions(AUSTable):
         users_list = list(set([r['username'] for r in res_users]))
         users = []
         for user in users_list:
-            res_roles = self.user_roles.select(where=[self.user_roles.username == user],
-            columns=[self.user_roles.role, self.user_roles.data_version], transaction=transaction)
+            res_roles = self.user_roles.select(where=[
+                self.user_roles.username == user],
+                columns=[self.user_roles.role, self.user_roles.data_version],
+                transaction=transaction)
             user_roles = {}
             user_roles[user] = res_roles
             users.append(user_roles)
@@ -2396,8 +2398,10 @@ class Permissions(AUSTable):
         roles_list = list(set([r['role'] for r in res]))
         roles = []
         for role in roles_list:
-            res_users = self.user_roles.select(where=[self.user_roles.role == role],
-            columns=[self.user_roles.username, self.user_roles.data_version], transaction=transaction)
+            res_users = self.user_roles.select(where=[
+                self.user_roles.role == role],
+                columns=[self.user_roles.username, self.user_roles.data_version],
+                transaction=transaction)
             role_users = {}
             role_users[role] = res_users
             roles.append(role_users)
