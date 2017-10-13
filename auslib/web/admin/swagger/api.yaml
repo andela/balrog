@@ -1189,7 +1189,7 @@ paths:
         description: "Returns all of Users in Balrog's DB."
       responses:
         '200':
-          description: Get all Users
+          description: Get all users inclusive of their roles
           schema:
             type: object
             properties:
@@ -1215,7 +1215,7 @@ paths:
         - application/json
       externalDocs:
         url: "http://mozilla-balrog.readthedocs.io/en/latest/admin_api.html#id19"
-        description: "Returns all of Roles in Balrog's DB."
+        description: "Returns all of roles in Balrog's DB."
       responses:
         '200':
           description: Get all Roles inclusive of their specific users
