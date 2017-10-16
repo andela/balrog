@@ -2268,7 +2268,7 @@ class Permissions(AUSTable):
             user_roles = {}
             user_roles[user] = res_roles
             users.append(user_roles)
-        return users
+        return sorted(users)
 
     def getAllPermissions(self, transaction=None):
         ret = defaultdict(dict)
@@ -2405,7 +2405,7 @@ class Permissions(AUSTable):
             role_users = {}
             role_users[role] = res_users
             roles.append(role_users)
-        return roles
+        return sorted(roles)
 
     def getRoleUsers(self, role, transaction=None):
         res = self.user_roles.select(where=[self.user_roles.role == role],

@@ -4220,16 +4220,31 @@ class TestPermissions(unittest.TestCase, MemoryDatabaseMixin):
                                 self.permissions.revokeRole, "bob", "dev", "bill", old_data_version=1)
 
     def testGetAllUsers(self):
-        self.assertEquals(set(self.permissions.getAllUsers()), set(["bill",
-                                                                    "bob",
-                                                                    "cathy",
-                                                                    "fred",
-                                                                    "george",
-                                                                    "janet",
-                                                                    "sean"]))
+        self.assertEquals(self.permissions.getAllUsers(), (
+            [{
+                'bill': []},
+                {
+                'bob': [{'data_version': 1, 'role': 'dev'},
+                        {'data_version': 1, 'role': 'releng'}]},
+                {
+                'cathy': [{'data_version': 1, 'role': 'releng'}]},
+                {
+                'fred': []},
+                {
+                'george': []},
+                {
+                'janet': [{'data_version': 1, 'role': 'releng'}]},
+                {
+                'sean': []}]))
 
     def testGetAllRoles(self):
-        self.assertEquals(self.permissions.getAllRoles(), ["releng", "dev"])
+        self.assertEquals(self.permissions.getAllRoles(), [{
+            'dev': [{'data_version': 1, 'username': 'bob'}]},
+            {
+            'releng': [
+                {'data_version': 1, 'username': 'bob'},
+                {'data_version': 1, 'username': 'cathy'},
+                {'data_version': 1, 'username': 'janet'}]}])
 
     def testCountAllUsers(self):
         self.assertEquals(self.permissions.countAllUsers(), 7)
@@ -4315,7 +4330,7 @@ class TestPermissions(unittest.TestCase, MemoryDatabaseMixin):
         self.assertTrue(self.permissions.hasRole("bob", "releng"))
 
     def testHasUser(self):
-        self.assertTrue(self.permissions.hasUser("bob", "releng"))
+        self.assertTrue(self.permissions.roleHasUser("bob", "releng"))
 
     def testHasRoleNegative(self):
         self.assertFalse(self.permissions.hasRole("cathy", "dev"))

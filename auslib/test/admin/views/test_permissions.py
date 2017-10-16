@@ -11,8 +11,18 @@ class TestUsersAPI_JSON(ViewTest):
         ret = self._get('/users')
         self.assertEqual(ret.status_code, 200)
         data = json.loads(ret.data)
-        data['users'] = set(data['users'])
-        self.assertEqual(data, dict(users=set(['bill', 'billy', 'bob', 'ashanti', 'mary', 'julie'])))
+        self.assertEqual(data, (
+            {'users': [{
+                'ashanti': []},
+                {
+                'bill': [{'data_version': 1, 'role': 'qa'},
+                         {'data_version': 1, 'role': 'releng'}]},
+                {
+                'billy': []},
+                {
+                'bob': [{'data_version': 1, 'role': 'relman'}]},
+                {
+                'mary': [{'data_version': 1, 'role': 'relman'}]}]}))
 
 
 class TestCurrentUserAPI_JSON(ViewTest):
@@ -795,17 +805,31 @@ class TestUserRolesAPI_JSON(ViewTest):
         self.assertEquals(got, [{"role": "qa", "data_version": 1},
                           {"role": "releng", "data_version": 1}])
 
-    def testGetRoleUsers(self):
-        ret = self._get("/roles/releng/users")
-        self.assertStatusCode(ret, 200)
-        got = json.loads(ret.data)["users"]
-        self.assertEquals(got, [{"data_version": 1, "username": "bill"}, {"data_version": 1, "username": "julie"}])
-
     def testGetAllRoles(self):
         ret = self._get("/roles")
         self.assertStatusCode(ret, 200)
         got = json.loads(ret.data)["roles"]
-        self.assertEqual(got, ['releng', 'qa', 'relman'])
+        self.assertEquals(got, [{
+            'qa': [{
+                'data_version': 1,
+                'username': 'bill'
+            }]
+        }, {
+            'releng': [{
+                'data_version': 1,
+                'username': 'bill'
+            }, {
+                'data_version': 1,
+                'username': 'julie'
+            }]
+        }, {
+            'relman': [{
+                'data_version': 1,
+                'username': 'bob'
+            }, {
+                'data_version': 1,
+                'username': 'mary'
+            }]}])
 
     def testGetRolesMissingUserReturnsEmptyList(self):
         ret = self.client.get("/users/dean/roles")
