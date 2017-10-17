@@ -18,10 +18,10 @@ describe("controller: UserPermissionsCtrl", function() {
 
   var sample_roles = {
     'roles': [
-      {'role':'qa', 'data_version': 1},
-      {'role':'releng', 'data_version':1}
+      {'data_version': 1, 'role':'qa' },
+      {'data_version':1, 'role':'releng' }
     ]};
-  var sample_all_roles = {'roles': ['qa', 'releng']};
+  var sample_all_roles = ['qa', 'releng'];
   var signoffRequirements = [];
 
   beforeEach(inject(function($controller, $rootScope, $location, $modal, Permissions, $httpBackend) {
@@ -56,7 +56,7 @@ describe("controller: UserPermissionsCtrl", function() {
       .respond(200, JSON.stringify(sample_permissions));
       this.$httpBackend.expectGET('/api/users/peterbe/roles')
       .respond(200, JSON.stringify(sample_roles));
-      this.$httpBackend.expectGET('/api/users/roles')
+      this.$httpBackend.expectGET('/api/roles')
       .respond(200, JSON.stringify(sample_all_roles));
       this.$httpBackend.flush();
       expect(this.scope.errors).toEqual({permissions:{}});
@@ -90,7 +90,7 @@ describe("controller: UserPermissionsCtrl", function() {
       .respond(200, JSON.stringify(sample_permissions));
       this.$httpBackend.expectGET('/api/users/peterbe/roles')
       .respond(200, JSON.stringify(sample_roles));
-      this.$httpBackend.expectGET('/api/users/roles')
+      this.$httpBackend.expectGET('/api/roles')
       .respond(200, JSON.stringify(sample_all_roles));
       this.$httpBackend.flush();
       this.$httpBackend.expectGET('/api/csrf_token')
@@ -113,7 +113,7 @@ describe("controller: UserPermissionsCtrl", function() {
       .respond(200, JSON.stringify(sample_permissions));
       this.$httpBackend.expectGET('/api/users/peterbe/roles')
       .respond(200, JSON.stringify(sample_roles));
-      this.$httpBackend.expectGET('/api/users/roles')
+      this.$httpBackend.expectGET('/api/roles')
       .respond(200, JSON.stringify(sample_all_roles));
       this.$httpBackend.flush();
       this.$httpBackend.expectGET('/api/csrf_token')
@@ -139,7 +139,7 @@ describe("controller: UserPermissionsCtrl", function() {
       .respond(200, JSON.stringify(sample_permissions));
       this.$httpBackend.expectGET('/api/users/peterbe/roles')
       .respond(200, JSON.stringify(sample_roles));
-      this.$httpBackend.expectGET('/api/users/roles')
+      this.$httpBackend.expectGET('/api/roles')
       .respond(200, JSON.stringify(sample_all_roles));
       this.$httpBackend.flush();
       this.$httpBackend.expectGET('/api/csrf_token')

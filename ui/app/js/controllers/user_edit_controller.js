@@ -6,6 +6,7 @@ function ($scope, $modalInstance, CSRF, Permissions, users, is_edit, user, permi
   $scope.users = users;
   $scope.currentItemTab = 1;
   $scope.is_edit = is_edit;
+  $scope.originalPermissions = [];
   $scope.permission = {
     permission: '',
     options_as_json: ''
@@ -97,7 +98,9 @@ function ($scope, $modalInstance, CSRF, Permissions, users, is_edit, user, permi
 
   Permissions.getAllRoles()
   .success(function(response) {
-    $scope.roles_list = response.roles;
+    $scope.roles_list = _.map(response.roles, function (each) {
+      return Object.keys(each).toString();
+    });
   })
   .error(function(response) {
     if (typeof response === 'object') {

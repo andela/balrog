@@ -89,17 +89,17 @@
   <div class="col-sm-5 text-right role-dropdown">
     <div class="row" ng-show="!rule_id">
       <label>All Roles:</label>
-      <select id="role-select-box" ng-model="role" name="role" ng-options="role for role in roles_list">
+      <select id="role-select-box" ng-model="current_role" name="current_role" ng-options="current_role for current_role in roles_list">
       </select>
     </div>
   </div>
 </div>
 
-  <div class="pagination-container" ng-show="role_filtered_items.length > pageSize">
-    <pagination class="pagination-sm" total-items="role_filtered_items.length" ng-model="currentPage" items-per-page="pageSize"></pagination>
+  <div class="pagination-container" ng-show="roles_list.length > pageSize">
+    <pagination class="pagination-sm" total-items="roles_list.length" ng-model="currentPage" items-per-page="pageSize"></pagination>
   </div>
 
-  <div ng-if="isAllRoles(role)" class="panel-group" ng-repeat="(key, role) in roles_users">
+  <div ng-if="isAllRoles(current_role)" class="panel-group" ng-repeat="(key, role) in roles_users">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h4 class="panel-title">
@@ -107,35 +107,29 @@
         </h4>
       </div>
       <div class="panel-body">
-        <div ng-if="role.length === 0">
-          <h5>No User</h5>
-        </div>
         <div ng-repeat="roleUser in role">
-          <h5>{{ roleUser["username"] }}</h5>
+          <h5 class="panel panel-default panel-heading">{{ roleUser["username"] }}</h5>
         </div>
       </div>
     </div>
   </div>
 
-  <div ng-if="!isAllRoles(role)" class="panel-group">
+  <div ng-if="!isAllRoles(current_role)" class="panel-group">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h4 class="panel-title">
-          {{ role }}
+          {{ current_role }}
         </h4>
       </div>
       <div class="panel-body">
-        <div ng-if="role.length === 0">
-          <h5>No User</h5>
-        </div>
-        <div ng-repeat="roleUser in roles_users[role] track by $index">
+        <div ng-repeat="roleUser in roles_users[current_role] track by $index">
           <h5>{{ roleUser["username"] }}</h5>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="pagination-container" ng-show="role_filtered_items.length > pageSize">
-    <pagination class="pagination-sm" total-items="role_filtered_items.length" ng-model="currentPage" items-per-page="pageSize"></pagination>
+  <div class="pagination-container" ng-show="roles_list.length > pageSize">
+    <pagination class="pagination-sm" total-items="roles_list.length" ng-model="currentPage" items-per-page="pageSize"></pagination>
   </div>
 </div>

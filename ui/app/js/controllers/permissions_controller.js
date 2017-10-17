@@ -7,14 +7,14 @@ function ($scope, $routeParams, $location, $timeout, Permissions, Search, $modal
   $scope.failed = false;
   $scope.username = $routeParams.username;
   $scope.tab = 1;
-  $scope.role = "All Roles";
+  $scope.current_role = "All Roles";
 
   $scope.isAllRoles = function (role) {
-    return $scope.role === "All Roles";
+    return $scope.current_role === "All Roles";
   };
 
   $scope.isSet = function (tabNum) {
-    return $scope.tab === tabNum;
+      return $scope.tab === tabNum;
   };
 
   $scope.setTab = function (newTab) {
@@ -22,22 +22,7 @@ function ($scope, $routeParams, $location, $timeout, Permissions, Search, $modal
   };
   $scope.roles_users = {};
   $scope.roles_list = ["All Roles"];
-  Permissions.getRolesUsers()
-    .success(function (response) {
-      $scope.user_roles = _.map(response.roles, function (each) {
-        var keys = Object.keys(each);
-        $scope.roles_list.push(keys[0]);
-        $scope.roles_users[keys[0]] = each[keys[0]];
-        return each;
-      });
-    })
-    .error(function () {
-      console.error(arguments);
-      $scope.failed = true;
-    })
-    .finally(function () {
-      $scope.loading = false;
-    });
+
 
   if ($scope.username) {
     // history of a specific rule
@@ -50,6 +35,23 @@ function ($scope, $routeParams, $location, $timeout, Permissions, Search, $modal
       .success(function (response) {
         $scope.users = _.map(response.users, function (each) {
           return { username: Object.keys(each).toString() };
+        });
+      })
+      .error(function () {
+        console.error(arguments);
+        $scope.failed = true;
+      })
+      .finally(function () {
+        $scope.loading = false;
+      });
+
+    Permissions.getRolesUsers()
+      .success(function (response) {
+        $scope.user_roles = _.map(response.roles, function (each) {
+          var keys = Object.keys(each);
+          $scope.roles_list.push(keys[0]);
+          $scope.roles_users[keys[0]] = each[keys[0]];
+          return each;
         });
       })
       .error(function () {
