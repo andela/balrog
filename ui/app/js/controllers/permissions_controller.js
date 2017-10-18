@@ -1,11 +1,12 @@
 angular.module("app").controller('PermissionsController',
-function ($scope, $routeParams, $location, $timeout, Permissions, Search, $modal, Page, PermissionsRequiredSignoffs) {
+function($scope, $routeParams, $location, $timeout, Permissions, Search, $modal, Page, PermissionsRequiredSignoffs, Helpers) {
 
   Page.setTitle('Permissions');
 
   $scope.loading = true;
   $scope.failed = false;
   $scope.username = $routeParams.username;
+  $scope.users = [];
   $scope.tab = 1;
   $scope.current_role = "All Roles";
 
@@ -61,6 +62,12 @@ function ($scope, $routeParams, $location, $timeout, Permissions, Search, $modal
       .finally(function () {
         $scope.loading = false;
       });
+
+      $scope.permissions_count = $scope.users.length;
+      $scope.page_size_pair = [{id: 20, name: '20'},
+        {id: 50, name: '50'}, 
+        {id: $scope.permissions_count, name: 'All'}];
+
   }
 
   $scope.signoffRequirements = [];
@@ -72,7 +79,9 @@ function ($scope, $routeParams, $location, $timeout, Permissions, Search, $modal
   $scope.ordering = ['username'];
 
   $scope.currentPage = 1;
-  $scope.pageSize = 10;  // default
+  $scope.storedPageSize = JSON.parse(localStorage.getItem('permissions_page_size'));
+  $scope.pageSize = $scope.storedPageSize? $scope.storedPageSize.id : 20;
+  $scope.page_size = {id: $scope.pageSize, name: $scope.storedPageSize? $scope.storedPageSize.name : $scope.pageSize};
 
   $scope.filters = {
     search: $location.hash(),
@@ -197,6 +206,10 @@ function ($scope, $routeParams, $location, $timeout, Permissions, Search, $modal
         },
       }
     });
+  };
+
+  $scope.selectPageSize = function() {
+    Helpers.selectPageSize($scope, 'permissions_page_size');
   };
 
 

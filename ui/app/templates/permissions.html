@@ -20,7 +20,14 @@
       <span ng-show="filters.search.length" ng-click="filters.search=''" class="glyphicon glyphicon-remove-circle clear-search"></span>
     </div>
 
-  </form>
+  <div class="page-size" ng-show="filtered_items.length > 20">
+    <label>Page Size: </label>
+    <select ng-model="page_size" ng-name="page_size"
+      ng-options="page_size.name for page_size in page_size_pair track by page_size.id"
+      ng-change="selectPageSize()"></select>
+  </div>
+
+</form>
 
 
   <h2>
@@ -39,11 +46,14 @@
 
   </h2>
 
-
-  <div class="pagination-container" ng-show="users_filtered_items.length > pageSize">
-    <pagination class="pagination-sm" total-items="users_filtered_items.length" ng-model="currentPage" items-per-page="pageSize"></pagination>
-  </div>
-
+<div class="pagination-container" ng-show="filtered_items.length > pageSize">
+  <pagination
+    class="pagination-sm"
+    total-items="filtered_items.length"
+    ng-model="currentPage"
+    items-per-page="pageSize"
+  ></pagination>
+</div>
 
   <div class="panel panel-default" style="clear:right" ng-repeat="user in users_filtered_items = (users | filter:filterBySearch) | orderBy:ordering | startFrom:(currentPage - 1)*pageSize | limitTo:pageSize">
     <div class="panel-heading">
@@ -123,7 +133,7 @@
       </div>
       <div class="panel-body">
         <div ng-repeat="roleUser in roles_users[current_role] track by $index">
-          <h5>{{ roleUser["username"] }}</h5>
+          <h5 class="panel panel-default panel-heading">{{ roleUser["username"] }}</h5>
         </div>
       </div>
     </div>
