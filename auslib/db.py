@@ -2286,7 +2286,7 @@ class Permissions(AUSTable):
 
     def getAllUsers(self, transaction=None):
         res_users = self.select(columns=[self.username], distinct=True, transaction=transaction)
-        users_list = list(set([r['username'] for r in res_users]))
+        users_list = list([r['username'] for r in res_users])
         users = []
         for user in users_list:
             res_roles = self.user_roles.select(where=[
