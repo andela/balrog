@@ -4415,15 +4415,6 @@ class TestPermissions(unittest.TestCase, MemoryDatabaseMixin):
                 {
                 'sean': []}]))
 
-    def testGetAllRoles(self):
-        self.assertEquals(self.permissions.getAllRoles(), [{
-            'dev': [{'data_version': 1, 'username': 'bob'}]},
-            {
-            'releng': [
-                {'data_version': 1, 'username': 'bob'},
-                {'data_version': 1, 'username': 'cathy'},
-                {'data_version': 1, 'username': 'janet'}]}])
-
     def testCountAllUsers(self):
         self.assertEquals(self.permissions.countAllUsers(), 7)
 
@@ -4506,9 +4497,6 @@ class TestPermissions(unittest.TestCase, MemoryDatabaseMixin):
 
     def testHasRole(self):
         self.assertTrue(self.permissions.hasRole("bob", "releng"))
-
-    def testHasUser(self):
-        self.assertTrue(self.permissions.roleHasUser("bob", "releng"))
 
     def testHasRoleNegative(self):
         self.assertFalse(self.permissions.hasRole("cathy", "dev"))

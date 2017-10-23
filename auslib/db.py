@@ -2421,20 +2421,6 @@ class Permissions(AUSTable):
                                      distinct=True, transaction=transaction)
         return [{"role": r["role"], "data_version": r["data_version"]} for r in res]
 
-    def getAllRoles(self, transaction=None):
-        res = self.user_roles.select(columns=[self.user_roles.role], distinct=True, transaction=transaction)
-        roles_list = list(set([r['role'] for r in res]))
-        roles = []
-        for role in roles_list:
-            res_users = self.user_roles.select(where=[
-                self.user_roles.role == role],
-                columns=[self.user_roles.username, self.user_roles.data_version],
-                transaction=transaction)
-            role_users = {}
-            role_users[role] = res_users
-            roles.append(role_users)
-        return sorted(roles)
-
     def getRoleUsers(self, role, transaction=None):
         res = self.user_roles.select(where=[self.user_roles.role == role],
                                      columns=[self.user_roles.username, self.user_roles.data_version],
@@ -2474,10 +2460,6 @@ class Permissions(AUSTable):
     def hasRole(self, username, role, transaction=None):
         roles_list = [r['role'] for r in self.getUserRoles(username, transaction)]
         return role in roles_list
-
-    def roleHasUser(self, username, role, transaction=None):
-        users_list = [r['username'] for r in self.getRoleUsers(role, transaction)]
-        return username in users_list
 
 
 class Dockerflow(AUSTable):
@@ -2704,9 +2686,6 @@ class AUSDatabase(object):
 
     def getUserRoles(self, *args, **kwargs):
         return self.permissions.getUserRoles(*args, **kwargs)
-
-    def getRoleUsers(self, *args, **kwargs):
-        return self.permissions.getRoleUsers(*args, **kwargs)
 
     def create(self, version=None):
         # Migrate's "create" merely declares a database to be under its control,

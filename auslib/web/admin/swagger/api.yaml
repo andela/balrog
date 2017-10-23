@@ -1200,6 +1200,17 @@ paths:
                 minItems: 0
                 items:
                   type: object
+                example: {
+                  "balrogadmin": [
+                    {
+                      "data_version": 1,
+                      "role": "releng"
+                    },
+                    {
+                      "data_version": 1,
+                      "role": "relman"
+                    }]
+                         }
 
 
   /roles:

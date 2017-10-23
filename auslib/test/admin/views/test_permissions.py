@@ -839,32 +839,6 @@ class TestUserRolesAPI_JSON(ViewTest):
         self.assertEquals(got, [{"role": "qa", "data_version": 1},
                           {"role": "releng", "data_version": 1}])
 
-    def testGetAllRoles(self):
-        ret = self._get("/roles")
-        self.assertStatusCode(ret, 200)
-        got = json.loads(ret.data)["roles"]
-        self.assertEquals(got, [{
-            'qa': [{
-                'data_version': 1,
-                'username': 'bill'
-            }]
-        }, {
-            'releng': [{
-                'data_version': 1,
-                'username': 'bill'
-            }, {
-                'data_version': 1,
-                'username': 'julie'
-            }]
-        }, {
-            'relman': [{
-                'data_version': 1,
-                'username': 'bob'
-            }, {
-                'data_version': 1,
-                'username': 'mary'
-            }]}])
-
     def testGetRolesMissingUserReturnsEmptyList(self):
         ret = self.client.get("/users/dean/roles")
         self.assertStatusCode(ret, 200)
