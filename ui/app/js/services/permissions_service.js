@@ -3,9 +3,6 @@ angular.module("app").factory('Permissions', function($http, $q, ScheduledChange
     getUsers: function() {
       return $http.get('/api/users');
     },
-    getRoles: function() {
-      return $http.get('/api/roles');
-    },
     getCurrentUser: function() {
       return $http.get("/api/users/current");
     },
@@ -68,12 +65,6 @@ angular.module("app").factory('Permissions', function($http, $q, ScheduledChange
       // when the user has no roles
       var url = '/api/users/' + encodeURIComponent(username) + '/roles';
       return $http.get(url);
-    },
-    getAllRoles: function() {
-      return $http.get('/api/roles');
-    },
-    getRolesUsers: function() {
-      return $http.get('/api/roles');
     },
     grantRole: function(username, role, data_version, csrf_token) {
       var url = '/api/users/' + encodeURIComponent(username) + '/roles/';

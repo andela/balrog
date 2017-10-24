@@ -8,21 +8,8 @@ function($scope, $routeParams, $location, $timeout, Permissions, Search, $modal,
   $scope.username = $routeParams.username;
   $scope.users = [];
   $scope.tab = 1;
-  $scope.current_role = "All Roles";
-
-  $scope.isAllRoles = function (role) {
-    return $scope.current_role === "All Roles";
-  };
-
-  $scope.isSet = function (tabNum) {
-      return $scope.tab === tabNum;
-  };
-
-  $scope.setTab = function (newTab) {
-    $scope.tab = newTab;
-  };
-  $scope.roles_users = {};
   $scope.roles_list = ["All Roles"];
+  $scope.current_role = $scope.roles_list[0];
 
 
   if ($scope.username) {
@@ -34,8 +21,20 @@ function($scope, $routeParams, $location, $timeout, Permissions, Search, $modal,
   } else {
     Permissions.getUsers()
       .success(function (response) {
-        $scope.users = _.map(response.users, function (each) {
-          return { username: Object.keys(each).toString() };
+        var roles = {};
+        $scope.users = _.map(response.users, function (eachUser) {
+          var username = Object.keys(eachUser);
+          eachUser[username[0]].map(function (eachRole) {
+            if (!roles.hasOwnProperty(eachRole.role)) {
+              roles[eachRole.role] = [];
+            }
+            if ($scope.roles_list.indexOf(eachRole.role) === -1) {
+              $scope.roles_list.sort().push(eachRole.role);
+            }
+            roles[eachRole.role].push(username[0]);
+          });
+          $scope.roles_users = roles;
+          return { username: username[0] };
         });
       })
       .error(function () {
@@ -46,27 +45,10 @@ function($scope, $routeParams, $location, $timeout, Permissions, Search, $modal,
         $scope.loading = false;
       });
 
-    Permissions.getRolesUsers()
-      .success(function (response) {
-        $scope.user_roles = _.map(response.roles, function (each) {
-          var keys = Object.keys(each);
-          $scope.roles_list.push(keys[0]);
-          $scope.roles_users[keys[0]] = each[keys[0]];
-          return each;
-        });
-      })
-      .error(function () {
-        console.error(arguments);
-        $scope.failed = true;
-      })
-      .finally(function () {
-        $scope.loading = false;
-      });
-
-      $scope.permissions_count = $scope.users.length;
-      $scope.page_size_pair = [{id: 20, name: '20'},
-        {id: 50, name: '50'}, 
-        {id: $scope.permissions_count, name: 'All'}];
+    $scope.permissions_count = $scope.users.length;
+    $scope.page_size_pair = [{ id: 20, name: '20' },
+    { id: 50, name: '50' },
+    { id: $scope.permissions_count, name: 'All' }];
 
   }
 
@@ -119,12 +101,6 @@ function($scope, $routeParams, $location, $timeout, Permissions, Search, $modal,
             return;
           }
         }
-        else {
-          if ((on === '*' || on === 'role') && item.role && item.role.match(regex)) {
-            matches++;
-            return;
-          }
-        }
       });
       return matches === Search.word_regexes.length;
     }
@@ -153,6 +129,9 @@ function($scope, $routeParams, $location, $timeout, Permissions, Search, $modal,
         permissionSignoffRequirements: function () {
           return $scope.signoffRequirements;
         },
+        roles_list: function() {
+          return $scope.roles_list;
+        }
       }
     });
   };
@@ -178,6 +157,9 @@ function($scope, $routeParams, $location, $timeout, Permissions, Search, $modal,
         permissionSignoffRequirements: function () {
           return $scope.signoffRequirements;
         },
+        roles_list: function() {
+          return $scope.roles_list;
+        }
       }
     });
   };
