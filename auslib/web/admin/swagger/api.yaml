@@ -1213,35 +1213,6 @@ paths:
                          }
 
 
-  /roles:
-    get:
-      summary: Returns all of Roles in Balrog's DB
-      description: >
-        Returns all of the roles present in Balrog. [Docs](http://mozilla-balrog.readthedocs.io/en/latest/admin_api.html#id20)
-      tags:
-        - Roles
-      operationId: auslib.web.admin.views.mapper.roles_get
-      consumes: []
-      produces:
-        - application/json
-      externalDocs:
-        url: "http://mozilla-balrog.readthedocs.io/en/latest/admin_api.html#id19"
-        description: "Returns all of roles in Balrog's DB."
-      responses:
-        '200':
-          description: Get all roles inclusive of their specific users
-          schema:
-            type: object
-            properties:
-              users:
-                description: list of roles
-                type: array
-                uniqueItems: true
-                minItems: 0
-                items:
-                  type: object
-
-
   /users/{username}:
     get:
       summary: Returns all of the details about the user
@@ -1302,40 +1273,6 @@ paths:
         '403':
           $ref: '#/responses/unauthorizedUser'
 
-  /users/{username}/roles:
-    get:
-      summary: Returns list of user roles
-      description: >
-        Returns list of user roles as a json object. [Docs](http://mozilla-balrog.readthedocs.io/en/latest/admin_api.html#users-username-roles).
-      tags:
-        - Users
-      operationId: auslib.web.admin.views.mapper.user_get_roles
-      consumes: []
-      produces:
-        - application/json
-      externalDocs:
-        url: "http://mozilla-balrog.readthedocs.io/en/latest/admin_api.html#id26"
-        description: Returns list of user roles
-      parameters:
-        - $ref: '#/parameters/usernameParam'
-      responses:
-        '200':
-          description: Successfully fetched the list of user roles.
-          schema:
-            type: object
-            properties:
-              roles:
-                description: list of roles
-                type: array
-                uniqueItems: true
-                minItems: 0
-                items:
-                  allOf:
-                    - $ref: '#/definitions/DataVersionModel'
-                    - $ref: '#/definitions/RoleModel'
-                  required:
-                    - data_version
-                    - role
 
   /users/{username}/permissions:
     get:

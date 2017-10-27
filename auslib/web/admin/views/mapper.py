@@ -4,8 +4,8 @@ from auslib.web.admin.views.rules import RulesAPIView, SingleRuleView, SingleRul
     RuleHistoryAPIView, RuleScheduledChangesView, EnactRuleScheduledChangeView, RuleScheduledChangeSignoffsView, \
     RuleScheduledChangeView, RuleScheduledChangeHistoryView
 
-from auslib.web.admin.views.permissions import UsersView, AllRolesView, SpecificUserView,\
-    PermissionsView, UserRolesView, UserRoleView, RoleUsersView, SpecificPermissionView, PermissionScheduledChangesView, \
+from auslib.web.admin.views.permissions import UsersView, SpecificUserView,\
+    PermissionsView, UserRoleView, SpecificPermissionView, PermissionScheduledChangesView, \
     EnactPermissionScheduledChangeView, PermissionScheduledChangeSignoffsView, PermissionScheduledChangeView, \
     PermissionScheduledChangeHistoryView
 
@@ -63,16 +63,6 @@ def users_get():
     return UsersView().get()
 
 
-def all_users_roles_get():
-    """GET /users/roles"""
-    return AllRolesView().get()
-
-
-def roles_get():
-    """GET /roles"""
-    return AllRolesView().get()
-
-
 def specific_user_get(username):
     """GET /users/:username"""
     return SpecificUserView().get(username)
@@ -81,16 +71,6 @@ def specific_user_get(username):
 def user_permissions_get(username):
     """GET /users/:username/permissions"""
     return PermissionsView().get(username)
-
-
-def user_get_roles(username):
-    """GET /users/:username/roles"""
-    return UserRolesView().get(username)
-
-
-def role_get_users(role):
-    """GET /roles/:role/users"""
-    return RoleUsersView().get(role)
 
 
 def user_role_put(username, role):
