@@ -4482,12 +4482,6 @@ class TestPermissions(unittest.TestCase, MemoryDatabaseMixin):
         got = self.permissions.getUserRoles("bob")
         self.assertEquals(sorted(got), sorted([{'data_version': 1, 'role': u'releng'}, {'data_version': 1, 'role': u'dev'}]))
 
-    def testGetRoleUsers(self):
-        got = self.permissions.getRoleUsers("releng")
-        self.assertEquals(sorted(got), sorted([{'data_version': 1, 'username': u'bob'},
-                                               {'data_version': 1, 'username': u'cathy'},
-                                               {'data_version': 1, 'username': u'janet'}]))
-
     def testGetUserRolesNonExistantUser(self):
         got = self.permissions.getUserRoles("kirk")
         self.assertEquals(got, [])

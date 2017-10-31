@@ -22,6 +22,8 @@ class TestUsersAPI_JSON(ViewTest):
                 {
                 'bob': [{'data_version': 1, 'role': 'relman'}]},
                 {
+                'julie': [{'data_version': 1, 'role': 'releng'}]},
+                {
                 'mary': [{'data_version': 1, 'role': 'relman'}]}]}))
 
 
@@ -857,17 +859,6 @@ class TestPermissionsScheduledChanges(ViewTest):
 
 
 class TestUserRolesAPI_JSON(ViewTest):
-
-    def testGetUserRoles(self):
-        ret = self._get("/users/bill/roles")
-        self.assertStatusCode(ret, 200)
-        got = json.loads(ret.data)["roles"]
-        self.assertEquals(got, [{"role": "qa", "data_version": 1},
-                          {"role": "releng", "data_version": 1}])
-
-    def testGetRolesMissingUserReturnsEmptyList(self):
-        ret = self.client.get("/users/dean/roles")
-        self.assertStatusCode(ret, 200)
 
     def testGrantRole(self):
         ret = self._put("/users/ashanti/roles/dev")
