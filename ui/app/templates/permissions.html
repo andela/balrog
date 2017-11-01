@@ -35,7 +35,7 @@
     <span ng-show="username">{{ username }}</span>
 
     <span class="count">
-    ({{ users_filtered_items.length | number:0 }}
+    ({{ filtered_items.length | number:0 }}
     <span ng-bind="hasFilter() ? 'found' : 'in total'"></span>)
     </span>
 
@@ -55,7 +55,7 @@
   ></pagination>
 </div>
 
-  <div class="panel panel-default" style="clear:right" ng-repeat="user in users_filtered_items = (users | filter:filterBySearch) | orderBy:ordering | startFrom:(currentPage - 1)*pageSize | limitTo:pageSize">
+  <div class="panel panel-default" style="clear:right" ng-repeat="user in filtered_items = (getUsers() | filter:filterBySearch) | orderBy:ordering | startFrom:(currentPage - 1)*pageSize | limitTo:pageSize">
     <div class="panel-heading">
 
       <h3 class="panel-title">
@@ -71,8 +71,8 @@
   </div>
 
 
-  <div class="pagination-container" ng-show="users_filtered_items.length > pageSize">
-    <pagination class="pagination-sm" total-items="users_filtered_items.length" ng-model="currentPage" items-per-page="pageSize"></pagination>
+  <div class="pagination-container" ng-show="filtered_items.length > pageSize">
+    <pagination class="pagination-sm" total-items="filtered_items.length" ng-model="currentPage" items-per-page="pageSize"></pagination>
   </div>
 </div>
 
@@ -94,17 +94,17 @@
   <div class="col-sm-5 text-right role-dropdown">
     <div class="row" ng-show="!rule_id">
       <label>All Roles:</label>
-      <select id="role-select-box" ng-model="current_role" name="current_role" ng-options="current_role for current_role in roles_list">
+      <select id="role-select-box" ng-model="current_role" name="current_role" ng-options="current_role for (current_role, users) in getRolesUsers()">
       </select>
     </div>
   </div>
 </div>
 
-  <div class="pagination-container" ng-show="roles_list.length > pageSize">
-    <pagination class="pagination-sm" total-items="roles_list.length" ng-model="currentPage" items-per-page="pageSize"></pagination>
+  <div class="pagination-container" ng-show="getRolesUsers().length > pageSize">
+    <pagination class="pagination-sm" total-items="getRolesUsers().length" ng-model="currentPage" items-per-page="pageSize"></pagination>
   </div>
 
-  <div ng-if="current_role === 'All Roles'" class="panel-group" ng-repeat="(role, roleUsers) in roles_users">
+  <div ng-if="current_role === 'All Roles'" class="panel-group" ng-repeat="(role, roleUsers) in getRolesUsers() track by $index">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h4 class="panel-title">

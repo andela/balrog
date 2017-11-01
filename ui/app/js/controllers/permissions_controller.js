@@ -10,7 +10,7 @@ function($scope, $routeParams, $location, $timeout, Permissions, Search, $modal,
   $scope.tab = 1;
   $scope.roles_list = ["All Roles"];
   $scope.current_role = $scope.roles_list[0];
-
+  $scope.users2 = [];
 
   if ($scope.username) {
     // history of a specific rule
@@ -21,20 +21,8 @@ function($scope, $routeParams, $location, $timeout, Permissions, Search, $modal,
   } else {
     Permissions.getUsers()
       .success(function (response) {
-        var roles = {};
-        $scope.users = _.map(response.users, function (eachUser) {
-          var username = Object.keys(eachUser);
-          eachUser[username[0]].map(function (eachRole) {
-            if (!roles.hasOwnProperty(eachRole.role)) {
-              roles[eachRole.role] = [];
-            }
-            if ($scope.roles_list.indexOf(eachRole.role) === -1) {
-              $scope.roles_list.sort().push(eachRole.role);
-            }
-            roles[eachRole.role].push(username[0]);
-          });
-          $scope.roles_users = roles;
-          return { username: username[0] };
+        $scope.users = _.map(response.users, function(eachUser){
+          return eachUser;
         });
       })
       .error(function () {
@@ -43,6 +31,9 @@ function($scope, $routeParams, $location, $timeout, Permissions, Search, $modal,
       })
       .finally(function () {
         $scope.loading = false;
+        console.log(($scope.users));
+        console.log('the roles users are:',getRolesUsers())
+
       });
 
     $scope.permissions_count = $scope.users.length;
@@ -51,6 +42,29 @@ function($scope, $routeParams, $location, $timeout, Permissions, Search, $modal,
     { id: $scope.permissions_count, name: 'All' }];
 
   }
+  $scope.getUsers = function () {
+    return $scope.users.map(function (eachUser) {
+      var username = Object.keys(eachUser);
+      return { username: username[0] };
+    });
+  };
+  $scope.getRolesUsers = function() {
+  var roles = {};
+  $scope.users.forEach(function (eachUser) {
+    var username = Object.keys(eachUser)[0];
+    eachUser[username].forEach(function (eachRole) {
+      if (!roles.hasOwnProperty(eachRole.role) ) {
+        roles[eachRole.role] = [];
+      }
+        roles[eachRole.role].push(username)
+      
+    });
+  });
+  return roles;
+}
+
+  console.log('users are:',$scope.getUsers())
+
 
   $scope.signoffRequirements = [];
   PermissionsRequiredSignoffs.getRequiredSignoffs()
@@ -197,3 +211,21 @@ function($scope, $routeParams, $location, $timeout, Permissions, Search, $modal,
 
 
 });
+
+
+
+        // var roles = {};
+        // $scope.users = _.map(response.users, function (eachUser) {
+        //   var username = Object.keys(eachUser);
+        //   eachUser[username[0]].map(function (eachRole) {
+        //     if (!roles.hasOwnProperty(eachRole.role)) {
+        //       roles[eachRole.role] = [];
+        //     }
+        //     if ($scope.roles_list.indexOf(eachRole.role) === -1) {
+        //       $scope.roles_list.sort().push(eachRole.role);
+        //     }
+        //     roles[eachRole.role].push(username[0]);
+        //   });
+        //   $scope.roles_users = roles;
+        //   return { username: username[0] };
+        // });
