@@ -2300,10 +2300,13 @@ class Permissions(AUSTable):
         for user in users_list:
             res_roles = self.user_roles.select(where=[
                 self.user_roles.username == user],
-                columns=[self.user_roles.role, self.user_roles.data_version],
+                columns=[self.user_roles.role],
                 transaction=transaction)
+            roles_list = list([r['role'] for r in res_roles])
+            roles = {}
+            roles["roles"] = roles_list
             user_roles = {}
-            user_roles[user] = res_roles
+            user_roles[user] = roles
             users.append(user_roles)
         return sorted(users)
 
